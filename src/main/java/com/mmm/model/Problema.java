@@ -25,6 +25,8 @@ public class Problema {
     private String descricao;
     private String bairro;
     private String cidade;
+
+    // data em que o problema foi criado
     private LocalDateTime dataCriacao;
     // Cada variável vira uma coluna
 
@@ -32,7 +34,7 @@ public class Problema {
     @ManyToOne //muitos problemas pertencem a um usuário
     @JoinColumn(name = "usuario_id") // cria coluna usuário_id
     // impede que o spring entre em loop infinito ao ler o usuário
-    @JsonIgnoreProperties ({"hibernateteLazyInitializer","handler","senha"})
+    @JsonIgnoreProperties ({"hibernateLazyInitializer","handler","senha"})
     private Usuario usuario;
 
 
@@ -62,13 +64,23 @@ public class Problema {
         this.cidade = cidade;
         this.usuario = usuario;
     }
-    // ler dados, salvar no banco, converter em JSON
+
+    //metodo roda automáticamente antes de salvar no banco
+    //data ainda estiver vazia, preenche com agora
+    @PrePersist
+    public void prePersist(){
+        if (this.dataCriacao==null){
+            this.dataCriacao=LocalDateTime.now();
+        }
+
+
+    }
+
     public Long getId() {
         return id;
     }
 
     public void setId(Long id) {
-
         this.id = id;
     }
 

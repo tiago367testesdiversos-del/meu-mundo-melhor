@@ -10,7 +10,7 @@ import com.mmm.repository.ProblemaRepository;// buscar problema
 import org.springframework.stereotype.Service;
 import java.util.List;
 
-// todos os imports devem ficar antes das anotações
+
 
 @Service // spring não sabe o que essa classe é um "Service" ao menos que o marque
 
@@ -29,15 +29,14 @@ private final ProblemaRepository problemaRepository;
     }
 
     // Listar comentários por problema
+    // já vem ordenado do banco
+    //prefeitura primeiro, depois mais recente
 
     public List<Comentario> listarPorProblema(Long problemaId) {
-
-        //banco devolve ordenado
-        List<Comentario>comentarios = comentarioRepository.findByProblemaOrdenado(problemaId);
 return comentarioRepository.findByProblemaOrdenado(problemaId);
 
     }
-    //metodo para salvar comentário
+    //metodo para salvar novo comentário
         public Comentario salvar (ComentarioRequest dto){
         // busca usuário pelo Id
             Usuario usuario = usuarioRepository.findById(dto.getUsuarioId())
@@ -56,7 +55,7 @@ return comentarioRepository.findByProblemaOrdenado(problemaId);
             if(isPrefeitura){
                 //bloqueia mais de um comentário oficial por problema
                 boolean jaExisteOficial = comentarioRepository
-                        .existsByProblemaIdAndOficialTrue(problema.getId());
+                        .existsByProblemaId_AndOficialTrue(problema.getId());
 
                 if (jaExisteOficial){
                     throw new RuntimeException(

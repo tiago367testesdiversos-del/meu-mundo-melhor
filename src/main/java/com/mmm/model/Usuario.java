@@ -12,6 +12,8 @@ public class Usuario {
  private String senha;
  private String cidade;
 
+
+ // comum ou prefeitura
  @Enumerated(EnumType.STRING)
  private TipoUsuario tipo;
 

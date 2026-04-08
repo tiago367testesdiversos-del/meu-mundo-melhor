@@ -4,12 +4,15 @@ import jakarta.persistence.*;
 import java.time.LocalDateTime;
 import org.hibernate.annotations.CreationTimestamp;
 
+// essa anotação controla oq eu vai ou não aparece no JSON
+//fala pro Spring : ingnora esses campos quando for transformar o objeto em JSON
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 @Entity
 public class Comentario {
 @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private long id;
+    private Long id;
 private String texto;
 
 // indica se o comentário é oficial ( Feito via prefeitura)
@@ -24,11 +27,13 @@ private boolean oficial;
 // Usuario que comentou
     @ManyToOne
     @JoinColumn(name="usuario_id")
+    @JsonIgnoreProperties({"hibernateLazyInitializer", "handler", "senha"})// evita loop infinito
     private Usuario usuario;
 
 // problema relacionado ao comentario
 @ManyToOne
     @JoinColumn(name="problema_id")
+@JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})// evita loop infinito
     private Problema problema;
 
     //construtor vazio (obrigatório)
@@ -70,7 +75,12 @@ public boolean isOficial(){
     public void setOficial(boolean oficial) {
         this.oficial = oficial;
     }
+
     public LocalDateTime getDataCriacao(){
         return dataCriacao;
+    }
+
+    public void setDataCriacao(LocalDateTime dataCriacao) {
+        this.dataCriacao = dataCriacao;
     }
 }

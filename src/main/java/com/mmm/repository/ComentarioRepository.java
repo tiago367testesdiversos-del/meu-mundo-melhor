@@ -5,6 +5,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 public interface ComentarioRepository  extends JpaRepository <Comentario,Long> {
@@ -28,5 +29,28 @@ List<Comentario>findByProblemaOrdenado(@Param("problemaId")Long problemaId);
     long countByProblemaId (Long problemaId);
 // verifica se já existe um comentario oficial da prefeitura
     // será usado para impedir mais de um comentário oficial
-    boolean existsByProblemaIdAndOficialTrue(long problemaId);
+    boolean existsByProblemaId_AndOficialTrue(Long problemaId);
+
+    // metodo para dashboad
+    //conta quantos comentários oficiais existem
+    // em problemas de uma cidade,
+
+    //será utilizado para calcular a participação da prefeitura
+    // ex cidade Diamantina // retornar quantos comentários oficiais existem nos problemas dessa cidade
+    long countByProblemaCidadeAndOficialTrue(String cidade);
+
+
+    //conta quantos comentários oficiais existem em problemas
+    // de uma cidade apartir de data/hora
+    //vamos usar para saver se houve comentário oficial hoje
+    //se for maior que 0 , seta para cima
+    //se for 0 seta para baixo
+
+    long countByProblemaCidadeAndOficialTrueAndDataCriacaoAfter(String cidade, LocalDateTime data);
+
+    //lista somente os comentários oficiais
+    // de uma cidade em ordem de mais recente para mais antigo
+
+    List<Comentario>findByProblemaCidadeAndOficialTrueOrderByDataCriacaoDesc(String cidade);
+
 }
