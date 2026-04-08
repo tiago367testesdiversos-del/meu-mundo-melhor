@@ -5,6 +5,7 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
 import java.util.List;
 import java.util.ArrayList; // evitar null
+import java.time.LocalDateTime; // necessário para data/hora do problema
 
 
 
@@ -24,6 +25,7 @@ public class Problema {
     private String descricao;
     private String bairro;
     private String cidade;
+    private LocalDateTime dataCriacao;
     // Cada variável vira uma coluna
 
     // Relacionaomento com Usuário
@@ -110,6 +112,16 @@ public class Problema {
     }
     public void setApoios(List<Apoio>apoios){
         this.apoios = apoios;
+    }
+
+    // data de criação
+
+    public LocalDateTime getDataCriacao(){
+        return dataCriacao;
+    }
+
+    public void setDataCriacao(LocalDateTime dataCriacao){
+        this.dataCriacao=dataCriacao;
     }
 
 }

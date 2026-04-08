@@ -58,3 +58,17 @@ public String getBairro(){
 // Nunca misture DTO com model
 // model=banco
 //dto=entrada/saida de API
+
+//o que o backend DEVOLVE
+
+//FRONTEND
+//   ↓
+//ProblemRequest (DTO entrada)
+//   ↓
+//SERVICE (regra + validação duplicado)
+//   ↓
+//ENTITY (salva no banco)
+//   ↓
+//ProblemResponse (DTO saída)
+//   ↓
+//FRONTEND (feed)

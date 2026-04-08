@@ -12,6 +12,9 @@ public class Usuario {
  private String senha;
  private String cidade;
 
+ @Enumerated(EnumType.STRING)
+ private TipoUsuario tipo;
+
 // construtor vazio ( obrigatório para o JPA/Hibernate)
     public Usuario (){
 
@@ -19,17 +22,18 @@ public class Usuario {
     // construtor sem ID (mais usado)-Banco de dados cria o ID pra mim
 
 
- public Usuario (String nome, String email, String senha, String cidade) {
+ public Usuario (String nome, String email, String senha, String cidade,TipoUsuario tipo) {
 
      this.nome = nome;
      this.email = email;
      this.senha = senha;
      this.cidade = cidade;
+     this.tipo=tipo;
  }
 public long getId (){
      return id;
  }
-public void  setID (Long id){
+public void  setId (Long id){
      this.id=id;
  }
 
@@ -61,7 +65,14 @@ public void setCidade(String cidade){
      this.cidade=cidade;
  }
 
- }
+    public TipoUsuario getTipo() {
+        return tipo;
+    }
+
+    public void setTipo(TipoUsuario tipo) {
+        this.tipo = tipo;
+    }
+}
 
 
 

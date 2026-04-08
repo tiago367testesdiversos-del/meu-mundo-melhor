@@ -1,6 +1,7 @@
 package com.mmm.service;
 import com.mmm.dto.ComentarioRequest;
 import com.mmm.model.Comentario;
+import com.mmm.model.TipoUsuario;
 import com.mmm.model.Usuario;
 import com.mmm.model.Problema;
 import com.mmm.repository.ComentarioRepository;
@@ -27,10 +28,16 @@ private final ProblemaRepository problemaRepository;
         this.problemaRepository=problemaRepository;
     }
 
-    public List<Comentario> listarPorProblema(Long ProblemaId) {
-        return comentarioRepository.findByProblemaId(ProblemaId);
+    // Listar comentários por problema
+
+    public List<Comentario> listarPorProblema(Long problemaId) {
+
+        //banco devolve ordenado
+        List<Comentario>comentarios = comentarioRepository.findByProblemaOrdenado(problemaId);
+return comentarioRepository.findByProblemaOrdenado(problemaId);
+
     }
-    //metodo para salvar
+    //metodo para salvar comentário
         public Comentario salvar (ComentarioRequest dto){
         // busca usuário pelo Id
             Usuario usuario = usuarioRepository.findById(dto.getUsuarioId())
@@ -38,12 +45,40 @@ private final ProblemaRepository problemaRepository;
             // busca o problema pelo Id
             Problema problema= problemaRepository.findById(dto.getProblemaId())
                     .orElseThrow(()->new RuntimeException("Problema não encontrado"));
+
+            // regra do do usuário tipo prefeitura
+            //se for prefeitura
+            //comentário oficial
+            // só pode existir 1 por problema
+
+            boolean isPrefeitura = usuario.getTipo()== TipoUsuario.PREFEITURA;
+
+            if(isPrefeitura){
+                //bloqueia mais de um comentário oficial por problema
+                boolean jaExisteOficial = comentarioRepository
+                        .existsByProblemaIdAndOficialTrue(problema.getId());
+
+                if (jaExisteOficial){
+                    throw new RuntimeException(
+                            "já existe comentário oficial da prefeitura para este problema"
+                    );
+                }
+
+            }
+
+
+
+
 // cria o comentário
             Comentario comentario = new Comentario();
             comentario.setTexto(dto.getTexto());
             comentario.setUsuario(usuario);//seta objeto
             comentario.setProblema(problema);//seta objeto problema
-            //salva no banco
+
+            // define se é oficial ou não
+            comentario.setOficial(isPrefeitura);
+            // salva no banco
+
 return comentarioRepository.save(comentario);
 
                 }

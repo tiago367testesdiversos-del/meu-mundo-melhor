@@ -5,6 +5,9 @@ import org.springframework.web.bind.annotation.*;
 import com.mmm.dto.ProblemaRequest;
 import com.mmm.dto.ProblemaResponse;
 
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+
 import java.util.List;
 
 @RestController
@@ -19,18 +22,31 @@ public class ProblemaController {
         this.service=service;
 
     }
+
+    // criar problema
     @PostMapping
     public ProblemaResponse criar(@RequestBody ProblemaRequest request) {
         return service.criar(request);
     }
-//agora retorno o DTO
+
+
+
+    //Feed otimzado
     @GetMapping
-    public List <ProblemaResponse> listar(){
-        return service.listar();
+    public List <ProblemaResponse> listar(
+        @RequestParam(defaultValue = "0")int page,
+                @RequestParam(defaultValue = "10")int size
+//page = pagina
+        // size= Quantos itens por pagina
+        ){
+        //retorna por pagina ( produção real)
+        Pageable pageable = PageRequest.of(page,size);
+        return service.listar(pageable); // conecta com otimizacao no sevice
     }
-
-
 }
+
+
+
 
 // motivo do service usar o problema model e controller não
 //service = trabalha com banco( model)

@@ -20,15 +20,20 @@ private long totalApoios;
 
 private long totalComentarios;
 
+private String comentarioOficial;
+
     //gettes e setters
     // São obrigatórios para o spring conseguir ler os dados JSON
 
-    public long getId(){
+    public Long getId(){
         return id;
     }
 public void setId (Long id ) {
     this.id = id;
 }
+
+
+
         public String getTitulo(){
         return titulo;
     }
@@ -67,6 +72,14 @@ public void setId (Long id ) {
     public void setTotalComentarios(long totalComentarios) {
         this.totalComentarios = totalComentarios;
     }
+
+    public String getComentarioOficial() {
+        return comentarioOficial;
+    }
+
+    public void setComentarioOficial(String comentarioOficial) {
+        this.comentarioOficial = comentarioOficial;
+    }
 }
 // por que exitir essa classe
 // evitar vazar senha e trazer somente dados necessários
@@ -81,3 +94,5 @@ public void setId (Long id ) {
 //Service	DTO + Model
 //Repository	Model
 //Banco	Model
+
+///👉 o que o frontend ENVIA
