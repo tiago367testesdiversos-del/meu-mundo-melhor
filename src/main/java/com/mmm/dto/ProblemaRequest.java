@@ -7,6 +7,7 @@ public class ProblemaRequest {
     private Long usuarioId;
     private String bairro;
     private String cidade;
+    private String uf;
 
 
     public String getTitulo( ) {
@@ -37,6 +38,14 @@ public String getBairro(){
 
     public String getCidade() {
         return cidade;
+    }
+
+    public String getUf() {
+        return uf;
+    }
+
+    public void setUf(String uf) {
+        this.uf = uf;
     }
 
     public void setCidade(String cidade) {

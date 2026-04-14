@@ -3,6 +3,7 @@ package com.mmm.dto;
 // DTO = objeto usado para devolver os dados prontos para o front
 public class DashboardResponse {
 
+    private String uf;
     private String cidade;
     private String bairro;
 
@@ -21,18 +22,28 @@ public class DashboardResponse {
     public DashboardResponse() {
     }
 
-    public DashboardResponse(String cidade,
+    public DashboardResponse(String uf,
+                             String cidade,
                              String bairro,
                              long totalProblemas,
                              String setaProblemas,
                              double percentualRespostaPrefeitura,
                              String setaPrefeitura) {
+        this.uf = uf;
         this.cidade = cidade;
         this.bairro = bairro;
         this.totalProblemas = totalProblemas;
         this.setaProblemas = setaProblemas;
         this.percentualRespostaPrefeitura = percentualRespostaPrefeitura;
         this.setaPrefeitura = setaPrefeitura;
+    }
+
+    public String getUf() {
+        return uf;
+    }
+
+    public void setUf(String uf) {
+        this.uf = uf;
     }
 
     public String getCidade() {
@@ -83,6 +94,3 @@ public class DashboardResponse {
         this.setaPrefeitura = setaPrefeitura;
     }
 }
-
-
-

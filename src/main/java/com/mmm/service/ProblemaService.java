@@ -74,11 +74,13 @@ private final ComentarioRepository comentarioRepository;
         // cria a Model ( Problema)
         // Bloqueio de duplicidade por titulo+cidade+bairro
         // Evita múltiplos registros do mesmo problema
-        boolean existeDuplicado= problemaRepository.existsByTituloAndCidadeAndBairro(
-                dto.getTitulo(),
-                dto.getCidade(),
-                dto.getBairro()
-        );
+        boolean existeDuplicado = problemaRepository
+                .existsByTituloAndUfAndCidadeAndBairro(
+                        dto.getTitulo(),
+                        dto.getUf(),
+                        dto.getCidade(),
+                        dto.getBairro()
+                );
         // se já existir, bloqueia criação
 
         if ( existeDuplicado){
@@ -129,6 +131,9 @@ private ProblemaResponse toResponse(Problema problema){
          response.setId(problema.getId());
          response.setTitulo(problema.getTitulo());
          response.setDescricao(problema.getDescricao());
+    response.setUf(problema.getUf());
+    response.setCidade(problema.getCidade());
+    response.setBairro(problema.getBairro());
 
          // usuário dono do problema
          response.setNomeUsuario(problema.getUsuario().getNome());

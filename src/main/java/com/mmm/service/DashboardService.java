@@ -23,43 +23,49 @@ public class DashboardService {
         this.comentarioRepository = comentarioRepository;
     }
 
-    public DashboardResponse buscarResumo(String cidade, String bairro) {
+    // =========================
+    // DASHBOARD POR CIDADE + BAIRRO (AGORA COM UF)
+    // =========================
+    public DashboardResponse buscarResumo(String uf, String cidade, String bairro) {
 
         // começo do dia de hoje
         LocalDateTime inicioDoDia = LocalDate.now().atStartOfDay();
 
-        // pega todos os problemas da cidade
+        // pega todos os problemas da cidade dentro da UF
         List<Problema> problemasDaCidade =
-                problemaRepository.findByCidadeOrderByDataCriacaoDesc(cidade);
+                problemaRepository.findByUfAndCidadeOrderByDataCriacaoDesc(uf, cidade);
 
+        // filtra os problemas do bairro escolhido
         // filtra os problemas do bairro escolhido
         List<Problema> problemasFiltrados = problemasDaCidade.stream()
                 .filter(p -> p.getBairro() != null && p.getBairro().equalsIgnoreCase(bairro))
                 .toList();
 
-        // total de problemas da cidade/bairro
+// total de problemas da cidade/bairro
         long totalProblemas = problemasFiltrados.size();
 
-        // quantos problemas desse bairro foram criados hoje
+// quantos problemas desse bairro foram criados hoje
         long problemasHoje = problemasFiltrados.stream()
                 .filter(p -> p.getDataCriacao() != null
                         && !p.getDataCriacao().isBefore(inicioDoDia))
                 .count();
 
-        // se teve problema hoje -> seta para cima
-        // se não teve -> seta para baixo
-        String setaProblemas = problemasHoje > 0 ? "↑" : "↓";
+// seta: só sobe se teve problema hoje, senão fica vazio
+        String setaProblemas = problemasHoje > 0 ? "↑" : "";
 
-        // calcular participação da prefeitura
-        // percentual = quantidade de problemas do bairro que receberam comentário oficial
-        // dividido pelo total de problemas do bairro
+        // =========================
+        // PARTICIPAÇÃO DA PREFEITURA
+        // =========================
+
         long problemasComRespostaPrefeitura = 0;
         long respostaPrefeituraHoje = 0;
 
         for (Problema problema : problemasFiltrados) {
-            List<Comentario> comentarios = comentarioRepository.findByProblemaId(problema.getId());
 
-            // se existir pelo menos 1 comentário oficial, conta como problema respondido
+            List<Comentario> comentarios =
+                    comentarioRepository.findByProblemaId(problema.getId());
+
+            // se existir pelo menos 1 comentário oficial
             boolean temComentarioOficial = comentarios.stream()
                     .anyMatch(Comentario::isOficial);
 
@@ -91,10 +97,10 @@ public class DashboardService {
                 Math.round(percentualRespostaPrefeitura * 100.0) / 100.0;
 
         // se teve comentário oficial hoje -> seta para cima
-        // se não teve -> seta para baixo
         String setaPrefeitura = respostaPrefeituraHoje > 0 ? "↑" : "↓";
 
         return new DashboardResponse(
+                uf, // 🔥 NOVO
                 cidade,
                 bairro,
                 totalProblemas,
@@ -103,13 +109,17 @@ public class DashboardService {
                 setaPrefeitura
         );
     }
-    public DashboardResponse buscarResumoCidade(String cidade) {
+
+    // =========================
+    // DASHBOARD SOMENTE POR CIDADE (AGORA COM UF)
+    // =========================
+    public DashboardResponse buscarResumoCidade(String uf, String cidade) {
 
         LocalDateTime inicioDoDia = LocalDate.now().atStartOfDay();
 
-        // pega todos os problemas da cidade
-        List<Problema> problemas = problemaRepository
-                .findByCidadeOrderByDataCriacaoDesc(cidade);
+        // pega todos os problemas da cidade dentro da UF
+        List<Problema> problemas =
+                problemaRepository.findByUfAndCidadeOrderByDataCriacaoDesc(uf, cidade);
 
         long totalProblemas = problemas.size();
 
@@ -156,14 +166,13 @@ public class DashboardService {
         String setaPrefeitura = respostaPrefeituraHoje > 0 ? "↑" : "↓";
 
         return new DashboardResponse(
+                uf, // 🔥 NOVO
                 cidade,
-                "TODOS", // aqui não tem bairro
+                "TODOS",
                 totalProblemas,
                 setaProblemas,
                 percentual,
                 setaPrefeitura
         );
     }
-
-
 }

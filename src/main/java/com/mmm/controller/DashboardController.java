@@ -18,21 +18,25 @@ public class DashboardController {
     }
 
     // exemplo:
-    // GET http://localhost:8080/dashboard?cidade=Diamantina&bairro=Lagoinha
+    // GET http://localhost:8080/dashboard?uf=MG&cidade=Diamantina&bairro=Lagoinha
     @GetMapping
     public DashboardResponse buscarResumo(
+            @RequestParam String uf,
             @RequestParam String cidade,
             @RequestParam String bairro
     ) {
-        return dashboardService.buscarResumo(cidade, bairro);
+        return dashboardService.buscarResumo(uf, cidade, bairro);
     }
 
     // ver no dashboard o resumo por cidade
+    // exemplo:
+    // GET http://localhost:8080/dashboard/cidade?uf=MG&cidade=Diamantina
     @GetMapping("/cidade")
     public DashboardResponse buscarResumoCidade(
+            @RequestParam String uf,
             @RequestParam String cidade
     ) {
-        return dashboardService.buscarResumoCidade(cidade);
+        return dashboardService.buscarResumoCidade(uf, cidade);
     }
 
 }

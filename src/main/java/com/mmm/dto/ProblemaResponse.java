@@ -1,40 +1,35 @@
 package com.mmm.dto;
-//DTO de saída (Response)
-//Classe que define o que a API Vai devolver para o cliente ( Postman, fontend etc)
-// Diferente da Model (Problema), aqui controla exatamente quais dados serão expostos
+
 public class ProblemaResponse {
 
-private Long id;
-
-
+    private Long id;
     private String titulo;
-    //titulo do problema
-
     private String descricao;
-    // descricão do problema
-
     private String nomeUsuario;
-    //Nome do usuário dono do problema
-    // importante: Não mandamos o objeto Usuário inteiro, só o necessário
-private long totalApoios;
 
-private long totalComentarios;
+    private long totalApoios;
+    private long totalComentarios;
 
-private String comentarioOficial;
+    private String comentarioOficial;
 
-    //gettes e setters
-    // São obrigatórios para o spring conseguir ler os dados JSON
 
-    public Long getId(){
+    private String uf;
+    private String cidade;
+    private String bairro;
+
+    // =========================
+    // GETTERS E SETTERS
+    // =========================
+
+    public Long getId() {
         return id;
     }
-public void setId (Long id ) {
-    this.id = id;
-}
 
+    public void setId(Long id) {
+        this.id = id;
+    }
 
-
-        public String getTitulo(){
+    public String getTitulo() {
         return titulo;
     }
 
@@ -49,7 +44,8 @@ public void setId (Long id ) {
     public void setDescricao(String descricao) {
         this.descricao = descricao;
     }
-    public String getNomeUsuario(){
+
+    public String getNomeUsuario() {
         return nomeUsuario;
     }
 
@@ -79,6 +75,34 @@ public void setId (Long id ) {
 
     public void setComentarioOficial(String comentarioOficial) {
         this.comentarioOficial = comentarioOficial;
+    }
+
+    // =========================
+    // NOVOS CAMPOS
+    // =========================
+
+    public String getUf() {
+        return uf;
+    }
+
+    public void setUf(String uf) {
+        this.uf = uf;
+    }
+
+    public String getCidade() {
+        return cidade;
+    }
+
+    public void setCidade(String cidade) {
+        this.cidade = cidade;
+    }
+
+    public String getBairro() {
+        return bairro;
+    }
+
+    public void setBairro(String bairro) {
+        this.bairro = bairro;
     }
 }
 // por que exitir essa classe

@@ -25,6 +25,7 @@ public class Problema {
     private String descricao;
     private String bairro;
     private String cidade;
+    private String uf;
 
     // data em que o problema foi criado
     private LocalDateTime dataCriacao;
@@ -56,13 +57,15 @@ public class Problema {
     }
 
     // Construtor completo
-    public Problema(String titulo, String descricao, String bairro, String cidade, Usuario usuario) {
+    public Problema(String titulo, String descricao, String bairro, String cidade, String uf, Usuario usuario) {
 
         this.titulo = titulo;
         this.descricao = descricao;
         this.bairro = bairro;
         this.cidade = cidade;
+        this.uf= uf;
         this.usuario = usuario;
+
     }
 
     //metodo roda automáticamente antes de salvar no banco
@@ -96,6 +99,14 @@ public class Problema {
     }
     public void setCidade(String cidade) {
         this.cidade = cidade;
+    }
+
+    public String getUf() {
+        return uf;
+    }
+
+    public void setUf(String uf) {
+        this.uf = uf;
     }
 
     public String getDescricao() {
