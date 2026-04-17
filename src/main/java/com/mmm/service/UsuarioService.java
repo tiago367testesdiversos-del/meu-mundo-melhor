@@ -35,6 +35,12 @@ public class UsuarioService {
     }
 
     public Usuario criar(UsuarioRequest dto) {
+
+        // impede email duplicado
+        if (repository.existsByEmail(dto.getEmail().trim().toLowerCase())) {
+            throw new RuntimeException("Já existe um usuário cadastrado com esse email.");
+        }
+
         Usuario usuario = new Usuario();
         usuario.setNome(dto.getNome());
         usuario.setEmail(dto.getEmail());
@@ -42,11 +48,10 @@ public class UsuarioService {
         usuario.setCidade(dto.getCidade());
 
         // código da prefeitura, para criar o UsuarioPrefeitura
-        if ("123456".equals(dto.getCodigoPrefeitura())) {
+        if ("123456".equals(dto.getSenha())) {
             usuario.setTipo(TipoUsuario.PREFEITURA);
         } else {
             usuario.setTipo(TipoUsuario.COMUM);
-
         }
         return repository.save(usuario);
 

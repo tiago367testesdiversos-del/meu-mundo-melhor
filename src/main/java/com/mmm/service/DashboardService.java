@@ -35,7 +35,7 @@ public class DashboardService {
         List<Problema> problemasDaCidade =
                 problemaRepository.findByUfAndCidadeOrderByDataCriacaoDesc(uf, cidade);
 
-        // filtra os problemas do bairro escolhido
+
         // filtra os problemas do bairro escolhido
         List<Problema> problemasFiltrados = problemasDaCidade.stream()
                 .filter(p -> p.getBairro() != null && p.getBairro().equalsIgnoreCase(bairro))
@@ -44,14 +44,31 @@ public class DashboardService {
 // total de problemas da cidade/bairro
         long totalProblemas = problemasFiltrados.size();
 
+
+        // começo e fim de ontem
+        LocalDateTime inicioDeOntem = LocalDate.now().minusDays(1).atStartOfDay();
+        LocalDateTime fimDeOntem = LocalDate.now().atStartOfDay();
+
 // quantos problemas desse bairro foram criados hoje
         long problemasHoje = problemasFiltrados.stream()
                 .filter(p -> p.getDataCriacao() != null
                         && !p.getDataCriacao().isBefore(inicioDoDia))
                 .count();
 
-// seta: só sobe se teve problema hoje, senão fica vazio
-        String setaProblemas = problemasHoje > 0 ? "↑" : "";
+// quantos problemas desse bairro foram criados ontem
+        long problemasOntem = problemasFiltrados.stream()
+                .filter(p -> p.getDataCriacao() != null
+                        && !p.getDataCriacao().isBefore(inicioDeOntem)
+                        && p.getDataCriacao().isBefore(fimDeOntem))
+                .count();
+
+// compara hoje com ontem
+        String setaProblemas = "";
+        if (problemasHoje > problemasOntem) {
+            setaProblemas = "↑";
+        } else if (problemasHoje < problemasOntem) {
+            setaProblemas = "↓";
+        }
 
         // =========================
         // PARTICIPAÇÃO DA PREFEITURA
@@ -131,13 +148,16 @@ public class DashboardService {
         String setaProblemas = problemasHoje > 0 ? "↑" : "↓";
 
         long problemasComRespostaPrefeitura = 0;
-        long respostaPrefeituraHoje = 0;
+        long problemasAntesDeHoje = 0;
+        long problemasComRespostaPrefeituraAntesDeHoje = 0;
 
         for (Problema problema : problemas) {
 
             List<Comentario> comentarios =
                     comentarioRepository.findByProblemaId(problema.getId());
 
+            // percentual atual:
+            // conta problemas que possuem pelo menos 1 comentário oficial
             boolean temComentarioOficial = comentarios.stream()
                     .anyMatch(Comentario::isOficial);
 
@@ -145,25 +165,54 @@ public class DashboardService {
                 problemasComRespostaPrefeitura++;
             }
 
-            boolean teveRespostaHoje = comentarios.stream()
-                    .anyMatch(c -> c.isOficial()
-                            && c.getDataCriacao() != null
-                            && !c.getDataCriacao().isBefore(inicioDoDia));
+            // percentual anterior:
+            // considera somente problemas criados antes de hoje
+            if (problema.getDataCriacao() != null
+                    && problema.getDataCriacao().isBefore(inicioDoDia)) {
 
-            if (teveRespostaHoje) {
-                respostaPrefeituraHoje++;
+                problemasAntesDeHoje++;
+
+                boolean tinhaRespostaOficialAntesDeHoje = comentarios.stream()
+                        .anyMatch(c -> c.isOficial()
+                                && c.getDataCriacao() != null
+                                && c.getDataCriacao().isBefore(inicioDoDia));
+
+                if (tinhaRespostaOficialAntesDeHoje) {
+                    problemasComRespostaPrefeituraAntesDeHoje++;
+                }
             }
         }
 
-        double percentual = 0.0;
+// percentual atual
+        double percentualRespostaPrefeitura = 0.0;
 
         if (totalProblemas > 0) {
-            percentual = (problemasComRespostaPrefeitura * 100.0) / totalProblemas;
+            percentualRespostaPrefeitura =
+                    (problemasComRespostaPrefeitura * 100.0) / totalProblemas;
         }
 
-        percentual = Math.round(percentual * 100.0) / 100.0;
+        percentualRespostaPrefeitura =
+                Math.round(percentualRespostaPrefeitura * 100.0) / 100.0;
 
-        String setaPrefeitura = respostaPrefeituraHoje > 0 ? "↑" : "↓";
+// percentual anterior
+        double percentualAnteriorPrefeitura = 0.0;
+
+        if (problemasAntesDeHoje > 0) {
+            percentualAnteriorPrefeitura =
+                    (problemasComRespostaPrefeituraAntesDeHoje * 100.0) / problemasAntesDeHoje;
+        }
+
+        percentualAnteriorPrefeitura =
+                Math.round(percentualAnteriorPrefeitura * 100.0) / 100.0;
+
+// seta baseada em comparação real
+        String setaPrefeitura = "";
+
+        if (percentualRespostaPrefeitura > percentualAnteriorPrefeitura) {
+            setaPrefeitura = "↑";
+        } else if (percentualRespostaPrefeitura < percentualAnteriorPrefeitura) {
+            setaPrefeitura = "↓";
+        }
 
         return new DashboardResponse(
                 uf, // 🔥 NOVO
@@ -171,7 +220,7 @@ public class DashboardService {
                 "TODOS",
                 totalProblemas,
                 setaProblemas,
-                percentual,
+                percentualRespostaPrefeitura,
                 setaPrefeitura
         );
     }

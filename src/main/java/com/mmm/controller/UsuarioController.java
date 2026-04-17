@@ -5,6 +5,9 @@ import com.mmm.model.Usuario;
 import com.mmm.service.UsuarioService;
 import org.springframework.web.bind.annotation.*; // Esse import traz anotações que transformam sua classe em uma API web.
 
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+
 import java.util.List;
 
 @RestController // Essa classe recebe requisições HTTP (internet) e responde com JSON
@@ -21,10 +24,15 @@ public class UsuarioController {
 
 
 //Recebe UsuarioRequest ( que tem o código secreto)
-    @PostMapping // criar usuários
-    public Usuario criar(@RequestBody UsuarioRequest dto){
-        return service.criar(dto);
+@PostMapping
+public ResponseEntity<?> criar(@RequestBody UsuarioRequest dto) {
+    try {
+        Usuario usuario = service.criar(dto);
+        return ResponseEntity.status(HttpStatus.CREATED).body(usuario);
+    } catch (RuntimeException e) {
+        return ResponseEntity.status(HttpStatus.CONFLICT).body(e.getMessage());
     }
+}
 
 
     @GetMapping // lista usuários

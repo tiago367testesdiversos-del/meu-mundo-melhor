@@ -20,6 +20,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
 
+
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -38,6 +39,8 @@ private final ApoioRepository apoioRepository;
 // acessa ao banco de dados do apoio
 private final ComentarioRepository comentarioRepository;
 // acessa banco de dados do comentários
+
+
 
 
     @Autowired // Spring, injete automaticamente essa dependência pra mim”
@@ -95,6 +98,7 @@ private final ComentarioRepository comentarioRepository;
         problema.setDescricao(dto.getDescricao());
         problema.setBairro(dto.getBairro());
         problema.setCidade(dto.getCidade());
+        problema.setUf(dto.getUf());
         problema.setUsuario(usuario);
         problema.setDataCriacao(java.time.LocalDateTime.now()); // importante para ordenação por mais recentes
 
@@ -134,6 +138,8 @@ private ProblemaResponse toResponse(Problema problema){
     response.setUf(problema.getUf());
     response.setCidade(problema.getCidade());
     response.setBairro(problema.getBairro());
+
+    response.setDataCriacao(problema.getDataCriacao()); // colocar data da criação do problema no feed
 
          // usuário dono do problema
          response.setNomeUsuario(problema.getUsuario().getNome());

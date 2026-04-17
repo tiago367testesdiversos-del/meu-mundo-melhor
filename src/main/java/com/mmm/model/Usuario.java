@@ -1,4 +1,5 @@
 package com.mmm.model;
+import jakarta.persistence.Column;
 
 import jakarta.persistence.*;
 @Entity
@@ -8,10 +9,11 @@ public class Usuario {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
  private String nome;
- private String email;
  private String senha;
  private String cidade;
 
+    @Column(nullable = false, unique = true)
+    private String email; // impedir de ter varios emails iguais com senhas diferentes
 
  // comum ou prefeitura
  @Enumerated(EnumType.STRING)
@@ -32,7 +34,7 @@ public class Usuario {
      this.cidade = cidade;
      this.tipo=tipo;
  }
-public long getId (){
+public Long getId (){
      return id;
  }
 public void  setId (Long id){

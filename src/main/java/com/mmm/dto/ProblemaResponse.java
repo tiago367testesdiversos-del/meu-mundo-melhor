@@ -1,5 +1,7 @@
 package com.mmm.dto;
 
+import java.time.LocalDateTime;
+
 public class ProblemaResponse {
 
     private Long id;
@@ -16,6 +18,8 @@ public class ProblemaResponse {
     private String uf;
     private String cidade;
     private String bairro;
+
+    private LocalDateTime dataCriacao;
 
     // =========================
     // GETTERS E SETTERS
@@ -104,6 +108,17 @@ public class ProblemaResponse {
     public void setBairro(String bairro) {
         this.bairro = bairro;
     }
+
+    public LocalDateTime getDataCriacao() {
+        return dataCriacao;
+    }
+
+    public void setDataCriacao(LocalDateTime dataCriacao) {
+        this.dataCriacao = dataCriacao;
+    }
+
+
+
 }
 // por que exitir essa classe
 // evitar vazar senha e trazer somente dados necessários
