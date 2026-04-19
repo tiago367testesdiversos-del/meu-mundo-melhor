@@ -29,9 +29,9 @@ public class ComentarioService {
         this.problemaRepository = problemaRepository;
     }
 
-    // =========================
+
     // LISTAR COMENTÁRIOS POR PROBLEMA
-    // =========================
+
     public List<ComentarioResponse> listarPorProblema(Long problemaId) {
         return comentarioRepository.findByProblemaOrdenado(problemaId)
                 .stream()
@@ -39,9 +39,9 @@ public class ComentarioService {
                 .collect(Collectors.toList());
     }
 
-    // =========================
+
     // SALVAR NOVO COMENTÁRIO
-    // =========================
+
     public Comentario salvar(ComentarioRequest dto) {
         Usuario usuario = usuarioRepository.findById(dto.getUsuarioId())
                 .orElseThrow(() -> new RuntimeException("Usuário não encontrado"));
@@ -57,7 +57,7 @@ public class ComentarioService {
 
             if (jaExisteOficial) {
                 throw new RuntimeException(
-                        "Já existe comentário oficial da prefeitura para este problema"
+                        "Este problema já possui um comentário oficial da prefeitura."
                 );
             }
         }
@@ -71,9 +71,9 @@ public class ComentarioService {
         return comentarioRepository.save(comentario);
     }
 
-    // =========================
+
     // CONVERTER ENTIDADE PARA DTO
-    // =========================
+
     private ComentarioResponse toResponse(Comentario comentario) {
         ComentarioResponse response = new ComentarioResponse();
 
@@ -88,7 +88,6 @@ public class ComentarioService {
         return response;
     }
 }
-
 
 
 
