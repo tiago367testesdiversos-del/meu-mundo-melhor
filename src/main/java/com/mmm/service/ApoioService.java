@@ -28,7 +28,7 @@ public class ApoioService {
         this.problemaRepository = problemaRepository;
     }
 
-    // =========================================================================
+
     // REGISTRAR NOVO APOIO
     // ----------------------------------------------------------------------------
     // Recebe apenas os IDs.
